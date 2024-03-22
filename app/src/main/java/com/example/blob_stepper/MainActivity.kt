@@ -25,7 +25,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlin.math.cos
 import kotlin.math.sin
@@ -130,5 +132,23 @@ fun AnimatedSmoothAlternatingWavesBlob(waveCount: Int = 5) {
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedSmoothAlternatingWavesBlob(2)
+        CanvasWithBorderCircle()
+    }
+}
+
+
+@Composable
+fun CanvasWithBorderCircle() {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val centerX = size.width / 2
+        val centerY = size.height / 2
+        val radius = 250f
+
+        drawCircle(
+            color = Color(color = 0xFFF2F2F2),
+            radius = radius,
+            center = Offset(centerX, centerY),
+            style = Stroke(width = 8f)
+        )
     }
 }
