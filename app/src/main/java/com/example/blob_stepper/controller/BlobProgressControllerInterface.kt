@@ -2,7 +2,7 @@ package com.example.blob_stepper.controller
 
 import androidx.compose.runtime.State
 
-interface ProgressControllerInterface {
+interface BlobProgressControllerInterface {
     val progress: State<Float>
 
     val isExpanded: State<Boolean>

@@ -4,11 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 
-class ProgressController(initialProgress: Float = 0f, private val steps: Int = 4) : ProgressControllerInterface {
+class BlobProgressController(initialProgress: Float = 0f, private val steps: Int = 4) : BlobProgressControllerInterface {
     private var _progress = mutableFloatStateOf(initialProgress)
     override val progress: State<Float> get() = _progress
 
-    private var _isExpanded = mutableStateOf(false)
+    private var _isExpanded = mutableStateOf(true)
     override val isExpanded: State<Boolean> get() = _isExpanded
 
     override fun next() {
