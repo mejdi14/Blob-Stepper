@@ -20,14 +20,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import kotlin.math.cos
 import kotlin.math.sin
@@ -131,8 +135,8 @@ fun AnimatedSmoothAlternatingWavesBlob(waveCount: Int = 5) {
 @Composable
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedSmoothAlternatingWavesBlob(2)
-        CanvasWithBorderCircle()
+        //AnimatedSmoothAlternatingWavesBlob(2)
+        AnimatedCircularBorderProgress()
     }
 }
 
@@ -149,6 +153,56 @@ fun CanvasWithBorderCircle() {
             radius = radius,
             center = Offset(centerX, centerY),
             style = Stroke(width = 8f)
+        )
+    }
+}
+
+@Composable
+fun AnimatedCircularBorderProgress() {
+    var targetProgress by remember { mutableStateOf(0f) }
+    val animatedProgress by animateFloatAsState(
+        targetValue = targetProgress,
+        animationSpec = tween(durationMillis = 500) // Smooth transition duration
+    )
+
+    val onClick = {
+        targetProgress += 0.25f
+        if (targetProgress > 1f) targetProgress = 0f // Reset after full circle
+    }
+
+    Canvas(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(onClick = onClick)
+    ) {
+        val strokeWidth = 20f
+        val diameter = size.minDimension / 2 - strokeWidth
+        val topLeft = Offset(
+            (size.width - diameter) / 2,
+            (size.height - diameter) / 2
+        )
+        val size = Size(diameter, diameter)
+        val startAngle = 90f
+        val sweepAngle = 360 * animatedProgress
+
+        drawArc(
+            color = Color.LightGray,
+            startAngle = 0f,
+            sweepAngle = 360f,
+            useCenter = false,
+            topLeft = topLeft,
+            size = size,
+            style = Stroke(width = strokeWidth)
+        )
+
+        drawArc(
+            color = Color.Black,
+            startAngle = startAngle,
+            sweepAngle = sweepAngle,
+            useCenter = false,
+            topLeft = topLeft,
+            size = size,
+            style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
         )
     }
 }
