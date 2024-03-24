@@ -7,7 +7,7 @@ data class ProgressBorderCircle (
     val strokeWidth: Float = 8f,
     val strokeDefaultColor: Color = Color.LightGray,
     val strokeFilledColor: Color = Color.Black,
-    val startAngle: ProgressStartAngle = ProgressStartAngle.Bottom,
+    val startAngle: ProgressStartAngle = ProgressStartAngle.Left,
     val progressAnimationDurationMillis: Int = 500,
 ): Circle() {
     val diameter: Float

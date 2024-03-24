@@ -1,6 +1,7 @@
 package com.example.blob_stepper
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -143,13 +145,17 @@ fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
         val controller = remember { BlobProgressController() }
         Column {
-            Box(modifier = Modifier
-                .weight(1f)
-                .background(color = Color.Blue)) {
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(color = Color.Blue)
+            ) {
             }
-            Box(modifier = Modifier
-                .height(300.dp)
-                .fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+            ) {
                 AnimatedCircularBorderProgress(controller = controller)
                 AnimatedSmoothAlternatingWavesBlob(controller = controller)
             }
@@ -162,16 +168,17 @@ fun AnimatedCircularBorderProgress(
     progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
     controller: BlobProgressController
 ) {
-    var targetProgress by remember { mutableFloatStateOf(0f) }
     val animatedProgress by animateFloatAsState(
         targetValue = controller.progress.value,
         animationSpec = tween(durationMillis = progressBorderCircle.progressAnimationDurationMillis),
         label = ""
     )
 
-    val onClick = {
-        targetProgress += 0.25f
-        if (targetProgress > 1f) targetProgress = 0f
+    LaunchedEffect(animatedProgress) {
+        if (animatedProgress == controller.progress.value) {
+            if(controller.progress.value == 1f)
+            controller.completionListener?.onProgressCompleted()
+        }
     }
 
     Canvas(
