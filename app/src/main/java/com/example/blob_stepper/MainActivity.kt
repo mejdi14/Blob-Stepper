@@ -178,9 +178,7 @@ private fun BlobStepper(
     blobActionListener: BlobActionListener
 ) {
     Box(
-        modifier = Modifier
-            .height(300.dp)
-            .fillMaxWidth()
+        modifier = modifier
     ) {
         AnimatedCircularBorderProgress(
             progressBorderCircle = progressBorderCircle,
