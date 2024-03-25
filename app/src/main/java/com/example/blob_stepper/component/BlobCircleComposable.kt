@@ -97,9 +97,10 @@ fun BlobCircleComposable(
             drawPath(path, Color.Black)
         }
         Text(
-            text = "text",
-            style = TextStyle(color = Color.White),
-            modifier = Modifier.align(Alignment.Center)
+            text = blobCircle.blobText.textStateValue.value,
+            style = blobCircle.blobText.textStyle,
+            color = blobCircle.blobText.color,
+            modifier = blobCircle.blobText.modifier.align(Alignment.Center)
         )
     }
 }
