@@ -99,7 +99,6 @@ fun AnimatedSmoothAlternatingWavesBlob(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
-
                         if (controller.isExpanded.value) controller.shrink() else controller.next()
                         blobActionListener.onChangeListener(controller.currentStep.value)
                     }
@@ -169,9 +168,7 @@ fun BlobScreen() {
 
 @Composable
 private fun BlobStepper(
-    modifier: Modifier = Modifier
-        .height(300.dp)
-        .fillMaxWidth(),
+    modifier: Modifier = Modifier,
     controller: BlobProgressController,
     progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
     blobCircle: BlobCircle = BlobCircle(),
@@ -179,6 +176,8 @@ private fun BlobStepper(
 ) {
     Box(
         modifier = modifier
+            .height(300.dp)
+            .fillMaxWidth(),
     ) {
         AnimatedCircularBorderProgress(
             progressBorderCircle = progressBorderCircle,
