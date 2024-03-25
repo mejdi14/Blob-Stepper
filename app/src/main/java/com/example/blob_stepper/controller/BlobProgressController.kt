@@ -2,6 +2,7 @@ package com.example.blob_stepper.controller
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 
 class BlobProgressController(
@@ -10,6 +11,9 @@ class BlobProgressController(
 ) : BlobProgressControllerInterface {
     private var _progress = mutableFloatStateOf(initialProgress)
     override val progress: State<Float> get() = _progress
+
+    private var _currentStep = mutableIntStateOf(0)
+    override val currentStep: State<Int> get() = _currentStep
 
     private var _isExpanded = mutableStateOf(true)
     override val isExpanded: State<Boolean> get() = _isExpanded
@@ -32,6 +36,7 @@ class BlobProgressController(
     }
 
     override fun goTo(step: Int) {
+        _currentStep.intValue = step
         _progress.floatValue = step.coerceIn(0, steps) / steps.toFloat()
     }
 

@@ -16,7 +16,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -25,8 +24,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
@@ -34,6 +31,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import com.example.blob_stepper.controller.BlobActionListener
 import com.example.blob_stepper.controller.BlobProgressController
 import com.example.blob_stepper.data.BlobCircle
 import com.example.blob_stepper.data.ProgressBorderCircle
@@ -76,7 +74,8 @@ fun GreetingPreview() {
 @Composable
 fun AnimatedSmoothAlternatingWavesBlob(
     blobCircle: BlobCircle = BlobCircle(),
-    controller: BlobProgressController
+    controller: BlobProgressController,
+    blobActionListener: BlobActionListener
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val animatedWave = infiniteTransition.animateFloat(
@@ -99,7 +98,11 @@ fun AnimatedSmoothAlternatingWavesBlob(
             .fillMaxSize()
             .pointerInput(Unit) {
                 detectTapGestures(
-                    onTap = { if (controller.isExpanded.value) controller.shrink() else controller.next() }
+                    onTap = {
+
+                        if (controller.isExpanded.value) controller.shrink() else controller.next()
+                        blobActionListener.onChangeListener(controller.currentStep.value)
+                    }
                 )
             }
     ) {
@@ -134,7 +137,6 @@ fun AnimatedSmoothAlternatingWavesBlob(
             }
             path.close()
         }
-
         drawPath(path, Color.Black)
     }
 }
@@ -143,7 +145,7 @@ fun AnimatedSmoothAlternatingWavesBlob(
 @Composable
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        val controller = remember { BlobProgressController() }
+        val controller = remember { BlobProgressController(steps = 8) }
         Column {
             Box(
                 modifier = Modifier
@@ -151,22 +153,53 @@ fun BlobScreen() {
                     .background(color = Color.Blue)
             ) {
             }
-            Box(
-                modifier = Modifier
-                    .height(300.dp)
-                    .fillMaxWidth()
-            ) {
-                AnimatedCircularBorderProgress(controller = controller)
-                AnimatedSmoothAlternatingWavesBlob(controller = controller)
-            }
+            BlobStepper(controller = controller, blobActionListener = object : BlobActionListener {
+                override fun onChangeListener(step: Int) {
+                    Log.d("TAG", "onChangeListener: $step")
+                }
+
+                override fun onFinishListener() {
+                    Log.d("TAG", "onFinishListener: ")
+                }
+
+            })
         }
+    }
+}
+
+@Composable
+private fun BlobStepper(
+    modifier: Modifier = Modifier
+        .height(300.dp)
+        .fillMaxWidth(),
+    controller: BlobProgressController,
+    progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
+    blobCircle: BlobCircle = BlobCircle(),
+    blobActionListener: BlobActionListener
+) {
+    Box(
+        modifier = Modifier
+            .height(300.dp)
+            .fillMaxWidth()
+    ) {
+        AnimatedCircularBorderProgress(
+            progressBorderCircle = progressBorderCircle,
+            controller = controller,
+            blobActionListener = blobActionListener
+        )
+        AnimatedSmoothAlternatingWavesBlob(
+            blobCircle = blobCircle,
+            controller = controller,
+            blobActionListener = blobActionListener
+        )
     }
 }
 
 @Composable
 fun AnimatedCircularBorderProgress(
     progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
-    controller: BlobProgressController
+    controller: BlobProgressController,
+    blobActionListener: BlobActionListener
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = controller.progress.value,
@@ -176,8 +209,10 @@ fun AnimatedCircularBorderProgress(
 
     LaunchedEffect(animatedProgress) {
         if (animatedProgress == controller.progress.value) {
-            if(controller.progress.value == 1f)
-            controller.completionListener?.onProgressCompleted()
+            if (controller.progress.value == 1f) {
+                controller.completionListener.onProgressCompleted()
+                blobActionListener.onFinishListener()
+            }
         }
     }
 

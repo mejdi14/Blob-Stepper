@@ -5,6 +5,8 @@ import androidx.compose.runtime.State
 interface BlobProgressControllerInterface {
     val progress: State<Float>
 
+    val currentStep: State<Int>
+
     val isExpanded: State<Boolean>
 
     val completionListener: ProgressCompletionListener
