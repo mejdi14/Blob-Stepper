@@ -9,4 +9,5 @@ data class BlobCircle(
     val wavesMovementDurationMillis: Int = 1000,
     val sizeTransformationDurationMillis: Int = 500,
     val wavesCount: Int = 2,
+    val blobText: BlobText = BlobText()
 ) : Circle()
