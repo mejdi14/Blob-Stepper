@@ -56,7 +56,13 @@ fun BlobCircleComposable(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
-                            if (controller.isExpanded.value) controller.shrink() else controller.next()
+                            if (controller.isExpanded.value) {
+                                blobActionListener.onStartListener()
+                                controller.shrink()
+                            } else {
+                                blobActionListener.onNextStepListener()
+                                controller.next()
+                            }
                             blobActionListener.onChangeListener(controller.currentStep.value)
                         }
                     )
