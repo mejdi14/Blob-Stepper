@@ -21,7 +21,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.TextStyle
 import com.example.blob_stepper.controller.BlobActionListener
 import com.example.blob_stepper.controller.BlobProgressController
 import com.example.blob_stepper.data.BlobCircle
