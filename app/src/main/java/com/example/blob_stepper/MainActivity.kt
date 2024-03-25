@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import com.example.blob_stepper.component.ProgressCircleComposable
 import com.example.blob_stepper.controller.BlobActionListener
 import com.example.blob_stepper.controller.BlobProgressController
 import com.example.blob_stepper.data.BlobCircle
+import com.example.blob_stepper.data.BlobText
 import com.example.blob_stepper.data.ProgressBorderCircle
 import com.example.blob_stepper.ui.theme.BlobStepperTheme
 
@@ -64,6 +66,9 @@ fun GreetingPreview() {
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
         val controller = remember { BlobProgressController(steps = 8) }
+        val textValue = remember {
+            mutableStateOf("Next")
+        }
         Column {
             Box(
                 modifier = Modifier
@@ -71,13 +76,14 @@ fun BlobScreen() {
                     .background(color = Color.Blue)
             ) {
             }
-            BlobStepper(controller = controller, blobActionListener = object : BlobActionListener {
+            BlobStepper(controller = controller, blobCircle = BlobCircle(blobText = BlobText(textStateValue = textValue)),blobActionListener = object : BlobActionListener {
                 override fun onChangeListener(step: Int) {
                     Log.d("TAG", "onChangeListener: $step")
                 }
 
                 override fun onFinishListener() {
                     Log.d("TAG", "onFinishListener: ")
+                    textValue.value = "Done"
                 }
 
             })
