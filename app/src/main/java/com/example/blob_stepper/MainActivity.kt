@@ -20,13 +20,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.blob_stepper.component.BlobCircleComposable
-import com.example.blob_stepper.component.ProgressCircleComposable
-import com.example.blob_stepper.controller.BlobActionListener
-import com.example.blob_stepper.controller.BlobProgressController
-import com.example.blob_stepper.data.BlobCircle
-import com.example.blob_stepper.data.BlobText
-import com.example.blob_stepper.data.ProgressBorderCircle
+import com.example.blobstepper.component.BlobCircleComposable
+import com.example.blobstepper.component.ProgressCircleComposable
+import com.example.blobstepper.controller.BlobActionListener
+import com.example.blobstepper.controller.BlobProgressController
+import com.example.blobstepper.data.BlobCircle
+import com.example.blobstepper.data.BlobText
+import com.example.blobstepper.data.ProgressBorderCircle
 import com.example.blob_stepper.ui.theme.BlobStepperTheme
 
 class MainActivity : ComponentActivity() {
@@ -65,7 +65,7 @@ fun GreetingPreview() {
 @Composable
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        val controller = remember { BlobProgressController(steps = 8) }
+        val controller = remember { com.example.blobstepper.controller.BlobProgressController(steps = 8) }
         val textValue = remember {
             mutableStateOf("Next")
         }
@@ -77,8 +77,12 @@ fun BlobScreen() {
             ) {
             }
             BlobStepper(controller = controller,
-                blobCircle = BlobCircle(blobText = BlobText(textStateValue = textValue)),
-                blobActionListener = object : BlobActionListener() {
+                blobCircle = com.example.blobstepper.data.BlobCircle(
+                    blobText = com.example.blobstepper.data.BlobText(
+                        textStateValue = textValue
+                    )
+                ),
+                blobActionListener = object : com.example.blobstepper.controller.BlobActionListener() {
                     override fun onChangeListener(step: Int) {
                         Log.d("TAG", "onChangeListener: $step")
                     }
@@ -101,22 +105,22 @@ fun BlobScreen() {
 @Composable
 private fun BlobStepper(
     modifier: Modifier = Modifier,
-    controller: BlobProgressController,
-    progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
-    blobCircle: BlobCircle = BlobCircle(),
-    blobActionListener: BlobActionListener
+    controller: com.example.blobstepper.controller.BlobProgressController,
+    progressBorderCircle: com.example.blobstepper.data.ProgressBorderCircle = com.example.blobstepper.data.ProgressBorderCircle(),
+    blobCircle: com.example.blobstepper.data.BlobCircle = com.example.blobstepper.data.BlobCircle(),
+    blobActionListener: com.example.blobstepper.controller.BlobActionListener
 ) {
     Box(
         modifier = modifier
             .height(300.dp)
             .fillMaxWidth(),
     ) {
-        ProgressCircleComposable(
+        com.example.blobstepper.component.ProgressCircleComposable(
             progressBorderCircle = progressBorderCircle,
             controller = controller,
             blobActionListener = blobActionListener
         )
-        BlobCircleComposable(
+        com.example.blobstepper.component.BlobCircleComposable(
             blobCircle = blobCircle,
             controller = controller,
             blobActionListener = blobActionListener

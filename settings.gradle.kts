@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Blob-Stepper"
 include(":app")
- 
+include(":blobstepper")
