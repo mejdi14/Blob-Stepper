@@ -4,20 +4,28 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blobstepper.component.BlobCircleComposable
@@ -62,10 +70,12 @@ fun GreetingPreview() {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        val controller = remember { com.example.blobstepper.controller.BlobProgressController(steps = 8) }
+        val controller = remember { BlobProgressController(steps = 8) }
+        val pagerState = rememberPagerState(pageCount = { controller.stepsCount })
         val textValue = remember {
             mutableStateOf("Next")
         }
@@ -75,14 +85,23 @@ fun BlobScreen() {
                     .weight(1f)
                     .background(color = Color.Blue)
             ) {
+                HorizontalPager(modifier = Modifier.fillMaxSize(), state = pagerState) {
+                    when (controller.currentStep.value) {
+                        0 -> PagerImage(R.drawable.image1)
+                        1 -> PagerImage(R.drawable.image2)
+                        2 -> PagerImage(R.drawable.image3)
+                        3 -> PagerImage(R.drawable.image4)
+                    }
+
+                }
             }
             BlobStepper(controller = controller,
-                blobCircle = com.example.blobstepper.data.BlobCircle(
-                    blobText = com.example.blobstepper.data.BlobText(
+                blobCircle = BlobCircle(
+                    blobText = BlobText(
                         textStateValue = textValue
                     )
                 ),
-                blobActionListener = object : com.example.blobstepper.controller.BlobActionListener() {
+                blobActionListener = object : BlobActionListener() {
                     override fun onChangeListener(step: Int) {
                         Log.d("TAG", "onChangeListener: $step")
                     }
@@ -92,35 +111,42 @@ fun BlobScreen() {
                         textValue.value = "Done"
                     }
 
-
-                    override fun onStartListener() {
-                        TODO("Not yet implemented")
-                    }
-
                 })
         }
     }
 }
 
 @Composable
+private fun PagerImage(imageResources: Int) {
+    Image(
+        painter = painterResource(id = imageResources),
+        contentDescription = "",
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp),
+        contentScale = ContentScale.FillBounds
+    )
+}
+
+@Composable
 private fun BlobStepper(
     modifier: Modifier = Modifier,
-    controller: com.example.blobstepper.controller.BlobProgressController,
-    progressBorderCircle: com.example.blobstepper.data.ProgressBorderCircle = com.example.blobstepper.data.ProgressBorderCircle(),
-    blobCircle: com.example.blobstepper.data.BlobCircle = com.example.blobstepper.data.BlobCircle(),
-    blobActionListener: com.example.blobstepper.controller.BlobActionListener
+    controller: BlobProgressController,
+    progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
+    blobCircle: BlobCircle = BlobCircle(),
+    blobActionListener: BlobActionListener
 ) {
     Box(
         modifier = modifier
             .height(300.dp)
             .fillMaxWidth(),
     ) {
-        com.example.blobstepper.component.ProgressCircleComposable(
+        ProgressCircleComposable(
             progressBorderCircle = progressBorderCircle,
             controller = controller,
             blobActionListener = blobActionListener
         )
-        com.example.blobstepper.component.BlobCircleComposable(
+        BlobCircleComposable(
             blobCircle = blobCircle,
             controller = controller,
             blobActionListener = blobActionListener

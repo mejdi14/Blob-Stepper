@@ -9,6 +9,9 @@ interface BlobProgressControllerInterface {
 
     val isExpanded: State<Boolean>
 
+
+    val stepsCount: Int
+
     val completionListener: ProgressCompletionListener
     fun shrink()
     fun expand()

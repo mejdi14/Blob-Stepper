@@ -15,6 +15,8 @@ class BlobProgressController(
     private var _currentStep = mutableIntStateOf(0)
     override val currentStep: State<Int> get() = _currentStep
 
+    override val stepsCount: Int get() = steps
+
     private var _isExpanded = mutableStateOf(true)
     override val isExpanded: State<Boolean> get() = _isExpanded
 
