@@ -76,20 +76,18 @@ fun BlobScreen() {
                     .background(color = Color.Blue)
             ) {
             }
-            BlobStepper(controller = controller, blobCircle = BlobCircle(blobText = BlobText(textStateValue = textValue)),
-                blobActionListener = object : BlobActionListener {
-                override fun onChangeListener(step: Int) {
-                    Log.d("TAG", "onChangeListener: $step")
-                }
-
-                override fun onFinishListener() {
-                    Log.d("TAG", "onFinishListener: ")
-                    textValue.value = "Done"
-                }
-
-                    override fun onNextStepListener() {
-                        TODO("Not yet implemented")
+            BlobStepper(controller = controller,
+                blobCircle = BlobCircle(blobText = BlobText(textStateValue = textValue)),
+                blobActionListener = object : BlobActionListener() {
+                    override fun onChangeListener(step: Int) {
+                        Log.d("TAG", "onChangeListener: $step")
                     }
+
+                    override fun onFinishListener() {
+                        Log.d("TAG", "onFinishListener: ")
+                        textValue.value = "Done"
+                    }
+
 
                     override fun onStartListener() {
                         TODO("Not yet implemented")

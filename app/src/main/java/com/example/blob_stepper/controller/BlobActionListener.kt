@@ -1,8 +1,15 @@
 package com.example.blob_stepper.controller
 
-interface BlobActionListener {
-    fun onChangeListener(step: Int)
-    fun onFinishListener()
-    fun onNextStepListener()
-    fun onStartListener()
+abstract class BlobActionListener {
+    open fun onStartListener(){
+    }
+    open fun onChangeListener(step: Int){
+
+    }
+    open fun onNextStepListener(){
+
+    }
+    open fun onFinishListener(){
+
+    }
 }
