@@ -15,6 +15,8 @@ interface BlobProgressControllerInterface {
     val completionListener: ProgressCompletionListener
     fun shrink()
     fun expand()
+    fun isExploded()
+    fun explode()
     fun next()
     fun back()
     fun goTo(step: Int)

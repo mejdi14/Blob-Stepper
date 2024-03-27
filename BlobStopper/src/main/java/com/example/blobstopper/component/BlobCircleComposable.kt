@@ -21,11 +21,15 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import com.example.blobstepper.controller.BlobActionListener
 import com.example.blobstepper.controller.BlobProgressController
 import com.example.blobstepper.data.BlobCircle
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun BlobCircleComposable(
@@ -43,7 +47,16 @@ fun BlobCircleComposable(
         ), label = ""
     )
 
-    val targetRadius = if (controller.isExpanded.value) 250f else 200f
+    val density = LocalDensity.current.density
+
+    // Calculate a screen-covering radius. Adjust as necessary for your design.
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp.value * density
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp.value * density
+    val screenCoveringRadius = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
+    val targetRadius = when (blobCircle.blobText.textStateValue.value) {
+        "Done" -> screenCoveringRadius
+        else -> if (controller.isExpanded.value) 250f else 200f
+    }
     val animatedRadius by animateFloatAsState(
         targetValue = targetRadius,
         animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing), label = ""
