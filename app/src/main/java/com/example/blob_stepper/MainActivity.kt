@@ -74,7 +74,7 @@ fun GreetingPreview() {
 @Composable
 fun BlobScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
-        val controller = remember { BlobProgressController(steps = 8) }
+        val controller = remember { BlobProgressController(steps = 4) }
         val pagerState = rememberPagerState(pageCount = { controller.stepsCount })
         val textValue = remember {
             mutableStateOf("Next")
@@ -87,10 +87,10 @@ fun BlobScreen() {
             ) {
                 HorizontalPager(modifier = Modifier.fillMaxSize(), state = pagerState) {
                     when (controller.currentStep.value) {
-                        0 -> PagerImage(R.drawable.image1)
-                        1 -> PagerImage(R.drawable.image2)
-                        2 -> PagerImage(R.drawable.image3)
-                        3 -> PagerImage(R.drawable.image4)
+                        1 -> PagerImage(R.drawable.image1)
+                        2 -> PagerImage(R.drawable.image2)
+                        3 -> PagerImage(R.drawable.image3)
+                        4 -> PagerImage(R.drawable.image4)
                     }
 
                 }
