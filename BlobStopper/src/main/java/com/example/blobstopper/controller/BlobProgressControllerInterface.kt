@@ -9,13 +9,15 @@ interface BlobProgressControllerInterface {
 
     val isExpanded: State<Boolean>
 
+    val isExploded: State<Boolean>
+
 
     val stepsCount: Int
 
     val completionListener: ProgressCompletionListener
     fun shrink()
     fun expand()
-    fun isExploded()
+
     fun explode()
     fun next()
     fun back()

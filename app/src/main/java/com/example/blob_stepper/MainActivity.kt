@@ -87,10 +87,10 @@ fun BlobScreen() {
             ) {
                 HorizontalPager(modifier = Modifier.fillMaxSize(), state = pagerState) {
                     when (controller.currentStep.value) {
-                        1 -> PagerImage(R.drawable.image1)
-                        2 -> PagerImage(R.drawable.image2)
-                        3 -> PagerImage(R.drawable.image3)
-                        4 -> PagerImage(R.drawable.image4)
+                        1 -> PagerImage(R.drawable.peep1)
+                        2 -> PagerImage(R.drawable.peep2)
+                        3 -> PagerImage(R.drawable.peep3)
+                        4 -> PagerImage(R.drawable.peep4)
                     }
 
                 }

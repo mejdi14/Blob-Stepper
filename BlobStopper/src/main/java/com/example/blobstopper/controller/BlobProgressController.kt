@@ -55,6 +55,9 @@ class BlobProgressController(
     override fun expand() {
         _isExpanded.value = true
     }
+    override fun explode() {
+        _isExploded.value = true
+    }
 
     override fun reset() {
         goTo(0)
