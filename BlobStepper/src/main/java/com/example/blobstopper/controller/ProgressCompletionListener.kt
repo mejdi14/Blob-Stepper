@@ -1,4 +1,4 @@
-package com.example.blob_stepper.controller
+package com.example.blobstepper.controller
 
 interface ProgressCompletionListener {
     fun onProgressCompleted()

@@ -1,4 +1,4 @@
-package com.example.blob_stepper.data
+package com.example.blobstepper.data
 
 import androidx.compose.ui.graphics.Color
 

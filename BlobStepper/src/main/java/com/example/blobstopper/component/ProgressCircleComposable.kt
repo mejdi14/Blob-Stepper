@@ -1,4 +1,4 @@
-package com.example.blob_stepper.component
+package com.example.blobstepper.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -12,9 +12,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.example.blob_stepper.controller.BlobActionListener
-import com.example.blob_stepper.controller.BlobProgressController
-import com.example.blob_stepper.data.ProgressBorderCircle
+import com.example.blobstepper.controller.BlobProgressController
+import com.example.blobstepper.data.ProgressBorderCircle
+import com.example.blobstopper.controller.BlobActionListener
 
 @Composable
 fun ProgressCircleComposable(
