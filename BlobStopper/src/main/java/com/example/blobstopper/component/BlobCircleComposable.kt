@@ -42,7 +42,10 @@ fun BlobCircleComposable(
         initialValue = 0f,
         targetValue = 2f * Math.PI.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            animation = tween(
+                durationMillis = blobCircle.wavesMovementDurationMillis,
+                easing = LinearEasing
+            ),
             repeatMode = RepeatMode.Restart
         ), label = ""
     )
@@ -54,11 +57,14 @@ fun BlobCircleComposable(
     val screenCoveringRadius = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
     val targetRadius = when (controller.isExploded.value) {
         true -> screenCoveringRadius
-        false -> if (controller.isExpanded.value) 250f else 200f
+        false -> if (controller.isExpanded.value) blobCircle.radius else blobCircle.shrinkRadius
     }
     val animatedRadius by animateFloatAsState(
         targetValue = targetRadius,
-        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing), label = ""
+        animationSpec = tween(
+            durationMillis = blobCircle.sizeTransformationDurationMillis,
+            easing = LinearOutSlowInEasing
+        ), label = ""
     )
 
     Box {
@@ -68,7 +74,6 @@ fun BlobCircleComposable(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
-
                             if (controller.isExpanded.value) {
                                 blobActionListener.onStartListener()
                                 controller.shrink()
