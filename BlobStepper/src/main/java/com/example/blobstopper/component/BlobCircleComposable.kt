@@ -69,6 +69,7 @@ fun BlobCircleComposable(
             contentVisibility.value = false
             screenCoveringRadius
         }
+
         false -> if (controller.isExpanded.value) blobCircle.radius else blobCircle.shrinkRadius
     }
     val animatedRadius by animateFloatAsState(
