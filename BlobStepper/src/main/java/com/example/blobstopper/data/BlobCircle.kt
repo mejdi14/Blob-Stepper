@@ -6,7 +6,7 @@ import com.example.blobstopper.component.BlobContent
 
 data class BlobCircle(
     override val radius: Float = 250f,
-    val shrinkRadius: Float = 200f,
+    val shrinkRadius: Float = 170f,
     val color: Color = Color.Black,
     val wavesHeight: Int = 2,
     val wavesMovementDurationMillis: Int = 800,
