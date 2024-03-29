@@ -17,7 +17,7 @@
 
 ## ✨ Demo
 <p align="center">
-<img src="https://github.com/mejdi14/Blob-Stepper/blob/master/demo/demo.gif" height="400" width="550" >
+<img src="https://github.com/mejdi14/Blob-Stepper/blob/master/demo/demo.gif" height="400" width="750" >
 	</p>
 	
 	
