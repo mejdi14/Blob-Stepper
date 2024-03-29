@@ -1,14 +1,12 @@
 package com.example.blob_stepper
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,23 +28,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.blobstepper.component.BlobCircleComposable
-import com.example.blobstepper.component.ProgressCircleComposable
-import com.example.blobstopper.controller.BlobActionListener
+import com.example.blob_stepper.ui.theme.BlobStepperTheme
 import com.example.blobstepper.controller.BlobProgressController
 import com.example.blobstepper.data.BlobCircle
-import com.example.blobstepper.data.BlobText
-import com.example.blobstepper.data.ProgressBorderCircle
-import com.example.blob_stepper.ui.theme.BlobStepperTheme
 import com.example.blobstopper.component.BlobContent
 import com.example.blobstopper.component.BlobStepper
+import com.example.blobstopper.controller.BlobActionListener
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -167,7 +161,7 @@ fun BlobScreen() {
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(
-                                text = "SUBMIT",
+                                text = stringResource(R.string.submit),
                                 style = TextStyle(fontWeight = FontWeight.Bold)
                             )
                         }

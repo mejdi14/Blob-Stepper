@@ -1,6 +1,5 @@
 package com.example.blobstepper.data
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import com.example.blobstopper.component.BlobContent
