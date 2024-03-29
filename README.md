@@ -20,12 +20,6 @@
 <img src="https://github.com/mejdi14/Blob-Stepper/blob/master/demo/demo.gif" height="700" width="400" >
 	</p>
 	
-	
-## :art:Design inspiration
-many thanks goes to [Kim Baschet](https://twitter.com/Kim_____B) for the beautiful design and animation
-
-
-
 
 ## Installation
 
