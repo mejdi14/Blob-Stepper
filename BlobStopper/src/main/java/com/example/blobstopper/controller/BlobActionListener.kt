@@ -1,4 +1,4 @@
-package com.example.blobstepper.controller
+package com.example.blobstopper.controller
 
 abstract class BlobActionListener {
     open fun onStartListener(){
@@ -10,6 +10,10 @@ abstract class BlobActionListener {
 
     }
     open fun onFinishListener(){
+
+    }
+
+    open fun onClickListener(){
 
     }
 }

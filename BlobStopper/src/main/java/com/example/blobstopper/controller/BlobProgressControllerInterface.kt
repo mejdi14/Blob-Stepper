@@ -11,6 +11,7 @@ interface BlobProgressControllerInterface {
 
     val isExploded: State<Boolean>
 
+    val isFinished: State<Boolean>
 
     val stepsCount: Int
 

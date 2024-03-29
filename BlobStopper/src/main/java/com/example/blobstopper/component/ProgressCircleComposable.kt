@@ -12,7 +12,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.example.blobstepper.controller.BlobActionListener
+import com.example.blobstopper.controller.BlobActionListener
 import com.example.blobstepper.controller.BlobProgressController
 import com.example.blobstepper.data.ProgressBorderCircle
 

@@ -24,7 +24,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.example.blobstepper.controller.BlobActionListener
+import com.example.blobstopper.controller.BlobActionListener
 import com.example.blobstepper.controller.BlobProgressController
 import com.example.blobstepper.data.BlobCircle
 import kotlin.math.cos
@@ -49,13 +49,12 @@ fun BlobCircleComposable(
 
     val density = LocalDensity.current.density
 
-    // Calculate a screen-covering radius. Adjust as necessary for your design.
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp.value * density
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp.value * density
     val screenCoveringRadius = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
-    val targetRadius = when (blobCircle.blobText.textStateValue.value) {
-        "Done" -> screenCoveringRadius
-        else -> if (controller.isExpanded.value) 250f else 200f
+    val targetRadius = when (controller.isExploded.value) {
+        true -> screenCoveringRadius
+        false -> if (controller.isExpanded.value) 250f else 200f
     }
     val animatedRadius by animateFloatAsState(
         targetValue = targetRadius,
@@ -69,6 +68,7 @@ fun BlobCircleComposable(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
+
                             if (controller.isExpanded.value) {
                                 blobActionListener.onStartListener()
                                 controller.shrink()

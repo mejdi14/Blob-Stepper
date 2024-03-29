@@ -23,11 +23,15 @@ class BlobProgressController(
     private var _isExploded = mutableStateOf(false)
     override val isExploded: State<Boolean> get() = _isExploded
 
+    private var _isFinished = mutableStateOf(false)
+    override val isFinished: State<Boolean> get() = _isFinished
+
     override val completionListener: ProgressCompletionListener = object :
         ProgressCompletionListener {
         override fun onProgressCompleted() {
             expand()
             _progress.floatValue = 0f
+            _isFinished.value = true
         }
     }
 
