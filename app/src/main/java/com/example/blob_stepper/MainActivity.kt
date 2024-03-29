@@ -35,6 +35,7 @@ import com.example.blobstepper.data.BlobCircle
 import com.example.blobstepper.data.BlobText
 import com.example.blobstepper.data.ProgressBorderCircle
 import com.example.blob_stepper.ui.theme.BlobStepperTheme
+import com.example.blobstopper.component.BlobContent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,9 +97,7 @@ fun BlobScreen() {
             }
             BlobStepper(controller = controller,
                 blobCircle = BlobCircle(
-                    blobText = BlobText(
-                        textStateValue = textValue
-                    )
+                    blobContent = BlobContent.TextContent(text = textValue)
                 ),
                 blobActionListener = object : BlobActionListener() {
                     override fun onChangeListener(step: Int) {

@@ -1,6 +1,9 @@
 package com.example.blobstepper.data
 
+import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import com.example.blobstopper.component.BlobContent
 
 data class BlobCircle(
     override val radius: Float = 250f,
@@ -9,5 +12,5 @@ data class BlobCircle(
     val wavesMovementDurationMillis: Int = 1000,
     val sizeTransformationDurationMillis: Int = 500,
     val wavesCount: Int = 2,
-    val blobText: BlobText = BlobText()
+    val blobContent: BlobContent = BlobContent.TextContent(mutableStateOf(""))
 ) : Circle()

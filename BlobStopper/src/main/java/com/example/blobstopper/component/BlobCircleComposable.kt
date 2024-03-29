@@ -1,5 +1,6 @@
 package com.example.blobstepper.component
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -9,12 +10,15 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -27,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.example.blobstopper.controller.BlobActionListener
 import com.example.blobstepper.controller.BlobProgressController
 import com.example.blobstepper.data.BlobCircle
+import com.example.blobstopper.component.BlobContent
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -38,6 +43,9 @@ fun BlobCircleComposable(
     blobActionListener: BlobActionListener
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
+    val contentVisibility = remember {
+        mutableStateOf(true)
+    }
     val animatedWave = infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 2f * Math.PI.toFloat(),
@@ -56,7 +64,10 @@ fun BlobCircleComposable(
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp.value * density
     val screenCoveringRadius = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
     val targetRadius = when (controller.isExploded.value) {
-        true -> screenCoveringRadius
+        true -> {
+            contentVisibility.value = false
+            screenCoveringRadius
+        }
         false -> if (controller.isExpanded.value) blobCircle.radius else blobCircle.shrinkRadius
     }
     val animatedRadius by animateFloatAsState(
@@ -119,11 +130,27 @@ fun BlobCircleComposable(
             }
             drawPath(path, Color.Black)
         }
-        Text(
-            text = blobCircle.blobText.textStateValue.value,
-            style = blobCircle.blobText.textStyle,
-            color = blobCircle.blobText.color,
-            modifier = blobCircle.blobText.modifier.align(Alignment.Center)
-        )
+        AnimatedVisibility(visible = contentVisibility.value, modifier = Modifier.align(Alignment.Center)) {
+            Box(modifier = Modifier.align(Alignment.Center)) {
+                when (blobCircle.blobContent) {
+                    is BlobContent.TextContent -> {
+                        Text(
+                            text = blobCircle.blobContent.text.value,
+                            style = blobCircle.blobContent.textStyle,
+                            color = blobCircle.blobContent.color,
+                            modifier = blobCircle.blobContent.modifier.align(Alignment.Center)
+                        )
+                    }
+
+                    is BlobContent.ImageContent -> {
+                        Image(
+                            painter = blobCircle.blobContent.painter.value,
+                            contentDescription = blobCircle.blobContent.contentDescription,
+                            modifier = blobCircle.blobContent.modifier
+                        )
+                    }
+                }
+            }
+        }
     }
 }
