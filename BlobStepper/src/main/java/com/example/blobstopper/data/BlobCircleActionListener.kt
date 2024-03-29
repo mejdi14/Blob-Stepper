@@ -1,4 +1,4 @@
-package com.example.blob_stepper.data
+package com.example.blobstepper.data
 
 interface BlobCircleActionListener {
     fun onShrink()

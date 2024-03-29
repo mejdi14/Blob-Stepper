@@ -1,4 +1,4 @@
-package com.example.blob_stepper.component
+package com.example.blobstepper.component
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -12,20 +12,26 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInput
-import com.example.blob_stepper.controller.BlobActionListener
-import com.example.blob_stepper.controller.BlobProgressController
-import com.example.blob_stepper.data.BlobCircle
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import com.example.blobstepper.controller.BlobProgressController
+import com.example.blobstepper.data.BlobCircle
+import com.example.blobstopper.component.BlobContentComposable
+import com.example.blobstopper.controller.BlobActionListener
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun BlobCircleComposable(
@@ -34,19 +40,41 @@ fun BlobCircleComposable(
     blobActionListener: BlobActionListener
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "")
+    val contentVisibility = remember {
+        mutableStateOf(true)
+    }
     val animatedWave = infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 2f * Math.PI.toFloat(),
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            animation = tween(
+                durationMillis = blobCircle.wavesMovementDurationMillis,
+                easing = LinearEasing
+            ),
             repeatMode = RepeatMode.Restart
         ), label = ""
     )
 
-    val targetRadius = if (controller.isExpanded.value) 250f else 200f
+    val density = LocalDensity.current.density
+
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp.value * density
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp.value * density
+    val screenCoveringRadius = sqrt(screenWidth * screenWidth + screenHeight * screenHeight)
+    val targetRadius = when (controller.isExploded.value) {
+        true -> {
+            contentVisibility.value = false
+            blobActionListener.onExplodeListener()
+            screenCoveringRadius
+        }
+
+        false -> if (controller.isExpanded.value) blobCircle.radius else blobCircle.shrinkRadius
+    }
     val animatedRadius by animateFloatAsState(
         targetValue = targetRadius,
-        animationSpec = tween(durationMillis = 500, easing = LinearOutSlowInEasing), label = ""
+        animationSpec = tween(
+            durationMillis = blobCircle.sizeTransformationDurationMillis,
+            easing = LinearOutSlowInEasing
+        ), label = ""
     )
 
     Box {
@@ -56,6 +84,7 @@ fun BlobCircleComposable(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
+                            blobActionListener.onClickListener()
                             if (controller.isExpanded.value) {
                                 blobActionListener.onStartListener()
                                 controller.shrink()
@@ -86,7 +115,7 @@ fun BlobCircleComposable(
                     val radian = Math.toRadians(angle.toDouble()).toFloat()
                     val phaseShift = Math.PI.toFloat() * (angle / (360f / blobCircle.wavesCount))
                     val waveOffset =
-                        if (!controller.isExpanded.value) 10 * sin(blobCircle.wavesCount * radian + animatedWave.value + phaseShift) else 0f
+                        if (!controller.isExpanded.value) blobCircle.wavesHeight * sin(blobCircle.wavesCount * radian + animatedWave.value + phaseShift) else 0f
                     val currentRadius = animatedRadius + waveOffset
                     val x = centerX + currentRadius * cos(radian)
                     val y = centerY + currentRadius * sin(radian)
@@ -101,11 +130,6 @@ fun BlobCircleComposable(
             }
             drawPath(path, Color.Black)
         }
-        Text(
-            text = blobCircle.blobText.textStateValue.value,
-            style = blobCircle.blobText.textStyle,
-            color = blobCircle.blobText.color,
-            modifier = blobCircle.blobText.modifier.align(Alignment.Center)
-        )
+        BlobContentComposable(contentVisibility, blobCircle, Modifier.align(Alignment.Center))
     }
 }

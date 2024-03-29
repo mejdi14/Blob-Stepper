@@ -1,4 +1,4 @@
-package com.example.blob_stepper.controller
+package com.example.blobstepper.controller
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableFloatStateOf
@@ -15,12 +15,23 @@ class BlobProgressController(
     private var _currentStep = mutableIntStateOf(0)
     override val currentStep: State<Int> get() = _currentStep
 
+    override val stepsCount: Int get() = steps
+
     private var _isExpanded = mutableStateOf(true)
     override val isExpanded: State<Boolean> get() = _isExpanded
 
-    override val completionListener: ProgressCompletionListener = object : ProgressCompletionListener{
+    private var _isExploded = mutableStateOf(false)
+    override val isExploded: State<Boolean> get() = _isExploded
+
+    private var _isFinished = mutableStateOf(false)
+    override val isFinished: State<Boolean> get() = _isFinished
+
+    override val completionListener: ProgressCompletionListener = object :
+        ProgressCompletionListener {
         override fun onProgressCompleted() {
             expand()
+            _progress.floatValue = 0f
+            _isFinished.value = true
         }
     }
 
@@ -47,6 +58,9 @@ class BlobProgressController(
 
     override fun expand() {
         _isExpanded.value = true
+    }
+    override fun explode() {
+        _isExploded.value = true
     }
 
     override fun reset() {

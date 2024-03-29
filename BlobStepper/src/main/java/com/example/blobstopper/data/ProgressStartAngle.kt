@@ -1,4 +1,4 @@
-package com.example.blob_stepper.data
+package com.example.blobstepper.data
 
 enum class ProgressStartAngle(val value: Float) {
      Top(270f),

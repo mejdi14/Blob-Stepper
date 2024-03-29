@@ -1,33 +1,48 @@
 package com.example.blob_stepper
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.blob_stepper.component.BlobCircleComposable
-import com.example.blob_stepper.component.ProgressCircleComposable
-import com.example.blob_stepper.controller.BlobActionListener
-import com.example.blob_stepper.controller.BlobProgressController
-import com.example.blob_stepper.data.BlobCircle
-import com.example.blob_stepper.data.BlobText
-import com.example.blob_stepper.data.ProgressBorderCircle
 import com.example.blob_stepper.ui.theme.BlobStepperTheme
+import com.example.blobstepper.controller.BlobProgressController
+import com.example.blobstepper.data.BlobCircle
+import com.example.blobstopper.component.BlobContent
+import com.example.blobstopper.component.BlobStepper
+import com.example.blobstopper.controller.BlobActionListener
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,67 +77,109 @@ fun GreetingPreview() {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BlobScreen() {
+    val showLastScreen = remember {
+        mutableStateOf(false)
+    }
     Box(modifier = Modifier.fillMaxSize()) {
-        val controller = remember { BlobProgressController(steps = 8) }
+        val controller = remember { BlobProgressController(steps = 3) }
+        val pagerState = rememberPagerState(pageCount = { controller.stepsCount })
+        val coroutineScope = rememberCoroutineScope()
         val textValue = remember {
             mutableStateOf("Next")
         }
-        Column {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .background(color = Color.Blue)
-            ) {
+        Box {
+            Column {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    HorizontalPager(modifier = Modifier.fillMaxSize(), state = pagerState) {
+                        when (controller.currentStep.value) {
+                            1 -> PagerImage(R.drawable.peep1)
+                            2 -> PagerImage(R.drawable.peep2)
+                            3 -> PagerImage(R.drawable.peep3)
+                            else -> PagerImage(R.drawable.peep4)
+                        }
+
+                    }
+                }
+                BlobStepper(controller = controller,
+                    blobCircle = BlobCircle(
+                        blobContent = BlobContent.TextContent(text = textValue)
+                    ),
+                    blobActionListener = object : BlobActionListener() {
+                        override fun onChangeListener(step: Int) {
+                            if (controller.isFinished.value)
+                                controller.explode()
+                        }
+
+                        override fun onFinishListener() {
+                            textValue.value = "Done"
+                        }
+
+                        override fun onExplodeListener() {
+                            coroutineScope.launch {
+                                delay(500)
+                                showLastScreen.value = true
+                            }
+                        }
+
+                    })
             }
-            BlobStepper(controller = controller, blobCircle = BlobCircle(blobText = BlobText(textStateValue = textValue)),
-                blobActionListener = object : BlobActionListener {
-                override fun onChangeListener(step: Int) {
-                    Log.d("TAG", "onChangeListener: $step")
-                }
+            AnimatedVisibility(
+                visible = showLastScreen.value, modifier = Modifier
+                    .fillMaxSize()
+                    .align(Alignment.Center),
+                enter = fadeIn()
+            ) {
 
-                override fun onFinishListener() {
-                    Log.d("TAG", "onFinishListener: ")
-                    textValue.value = "Done"
-                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 15.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.m_logo),
+                        contentDescription = "",
+                        modifier = Modifier.size(150.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.big_text), color = Color.White
+                    )
 
-                    override fun onNextStepListener() {
-                        TODO("Not yet implemented")
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                            .height(50.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color.White,
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                text = stringResource(R.string.submit),
+                                style = TextStyle(fontWeight = FontWeight.Bold)
+                            )
+                        }
                     }
-
-                    override fun onStartListener() {
-                        TODO("Not yet implemented")
-                    }
-
-                })
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun BlobStepper(
-    modifier: Modifier = Modifier,
-    controller: BlobProgressController,
-    progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
-    blobCircle: BlobCircle = BlobCircle(),
-    blobActionListener: BlobActionListener
-) {
-    Box(
-        modifier = modifier
-            .height(300.dp)
-            .fillMaxWidth(),
-    ) {
-        ProgressCircleComposable(
-            progressBorderCircle = progressBorderCircle,
-            controller = controller,
-            blobActionListener = blobActionListener
-        )
-        BlobCircleComposable(
-            blobCircle = blobCircle,
-            controller = controller,
-            blobActionListener = blobActionListener
-        )
-    }
+private fun PagerImage(imageResources: Int) {
+    Image(
+        painter = painterResource(id = imageResources),
+        contentDescription = "",
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(10.dp),
+        contentScale = ContentScale.FillBounds
+    )
 }
-

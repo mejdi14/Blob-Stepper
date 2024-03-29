@@ -1,4 +1,4 @@
-package com.example.blob_stepper.data
+package com.example.blobstepper.data
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -8,7 +8,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
-import com.example.blob_stepper.R
+import com.example.blobstopper.R
 
 data class BlobText(
     val textStateValue: State<String> = mutableStateOf(""),
