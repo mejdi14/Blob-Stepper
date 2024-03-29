@@ -16,4 +16,9 @@ abstract class BlobActionListener {
     open fun onClickListener(){
 
     }
+
+    open fun onExplodeListener(){
+
+    }
+
 }

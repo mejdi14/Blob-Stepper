@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -36,6 +38,7 @@ import com.example.blobstepper.data.BlobText
 import com.example.blobstepper.data.ProgressBorderCircle
 import com.example.blob_stepper.ui.theme.BlobStepperTheme
 import com.example.blobstopper.component.BlobContent
+import com.example.blobstopper.component.BlobStepper
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,43 +76,56 @@ fun GreetingPreview() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BlobScreen() {
+    val showLastScreen = remember {
+        mutableStateOf(false)
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         val controller = remember { BlobProgressController(steps = 3) }
         val pagerState = rememberPagerState(pageCount = { controller.stepsCount })
         val textValue = remember {
             mutableStateOf("Next")
         }
-        Column {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                HorizontalPager(modifier = Modifier.fillMaxSize(), state = pagerState) {
-                    when (controller.currentStep.value) {
-                        1 -> PagerImage(R.drawable.peep1)
-                        2 -> PagerImage(R.drawable.peep2)
-                        3 -> PagerImage(R.drawable.peep3)
-                        else -> PagerImage(R.drawable.peep4)
-                    }
+        Box {
+            Column {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
+                    HorizontalPager(modifier = Modifier.fillMaxSize(), state = pagerState) {
+                        when (controller.currentStep.value) {
+                            1 -> PagerImage(R.drawable.peep1)
+                            2 -> PagerImage(R.drawable.peep2)
+                            3 -> PagerImage(R.drawable.peep3)
+                            else -> PagerImage(R.drawable.peep4)
+                        }
 
+                    }
                 }
+                BlobStepper(controller = controller,
+                    blobCircle = BlobCircle(
+                        blobContent = BlobContent.TextContent(text = textValue)
+                    ),
+                    blobActionListener = object : BlobActionListener() {
+                        override fun onChangeListener(step: Int) {
+                            if (controller.isFinished.value)
+                                controller.explode()
+                        }
+
+                        override fun onFinishListener() {
+                            textValue.value = "Done"
+                        }
+
+                        override fun onExplodeListener() {
+                            Log.d("TAG", "onExplodeListener: ")
+
+                            showLastScreen.value = true
+                        }
+
+                    })
             }
-            BlobStepper(controller = controller,
-                blobCircle = BlobCircle(
-                    blobContent = BlobContent.TextContent(text = textValue)
-                ),
-                blobActionListener = object : BlobActionListener() {
-                    override fun onChangeListener(step: Int) {
-                        if (controller.isFinished.value)
-                            controller.explode()
-                    }
-
-                    override fun onFinishListener() {
-                        Log.d("TAG", "onFinishListener: ")
-                        textValue.value = "Done"
-                    }
-
-                })
+            AnimatedVisibility(visible = showLastScreen.value, modifier = Modifier.fillMaxSize().align(Alignment.Center)) {
+                Text(text = "ghsoiufghoizehgiohrezioghiorez", color = Color.White)
+            }
         }
     }
 }
@@ -125,30 +141,3 @@ private fun PagerImage(imageResources: Int) {
         contentScale = ContentScale.FillBounds
     )
 }
-
-@Composable
-private fun BlobStepper(
-    modifier: Modifier = Modifier,
-    controller: BlobProgressController,
-    progressBorderCircle: ProgressBorderCircle = ProgressBorderCircle(),
-    blobCircle: BlobCircle = BlobCircle(),
-    blobActionListener: BlobActionListener
-) {
-    Box(
-        modifier = modifier
-            .height(300.dp)
-            .fillMaxWidth(),
-    ) {
-        ProgressCircleComposable(
-            progressBorderCircle = progressBorderCircle,
-            controller = controller,
-            blobActionListener = blobActionListener
-        )
-        BlobCircleComposable(
-            blobCircle = blobCircle,
-            controller = controller,
-            blobActionListener = blobActionListener
-        )
-    }
-}
-

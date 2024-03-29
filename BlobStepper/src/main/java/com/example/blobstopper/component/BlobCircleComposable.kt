@@ -33,6 +33,7 @@ import com.example.blobstopper.controller.BlobActionListener
 import com.example.blobstepper.controller.BlobProgressController
 import com.example.blobstepper.data.BlobCircle
 import com.example.blobstopper.component.BlobContent
+import com.example.blobstopper.component.BlobContentComposable
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -67,6 +68,7 @@ fun BlobCircleComposable(
     val targetRadius = when (controller.isExploded.value) {
         true -> {
             contentVisibility.value = false
+            blobActionListener.onExplodeListener()
             screenCoveringRadius
         }
 
@@ -87,6 +89,7 @@ fun BlobCircleComposable(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = {
+                            blobActionListener.onClickListener()
                             if (controller.isExpanded.value) {
                                 blobActionListener.onStartListener()
                                 controller.shrink()
@@ -117,7 +120,7 @@ fun BlobCircleComposable(
                     val radian = Math.toRadians(angle.toDouble()).toFloat()
                     val phaseShift = Math.PI.toFloat() * (angle / (360f / blobCircle.wavesCount))
                     val waveOffset =
-                        if (!controller.isExpanded.value) 10 * sin(blobCircle.wavesCount * radian + animatedWave.value + phaseShift) else 0f
+                        if (!controller.isExpanded.value) blobCircle.wavesHeight * sin(blobCircle.wavesCount * radian + animatedWave.value + phaseShift) else 0f
                     val currentRadius = animatedRadius + waveOffset
                     val x = centerX + currentRadius * cos(radian)
                     val y = centerY + currentRadius * sin(radian)
@@ -133,38 +136,5 @@ fun BlobCircleComposable(
             drawPath(path, Color.Black)
         }
         BlobContentComposable(contentVisibility, blobCircle, Modifier.align(Alignment.Center))
-    }
-}
-
-@Composable
-private fun BlobContentComposable(
-    contentVisibility: MutableState<Boolean>,
-    blobCircle: BlobCircle,
-    modifier: Modifier
-) {
-    AnimatedVisibility(
-        visible = contentVisibility.value,
-        modifier = modifier
-    ) {
-        Box {
-            when (blobCircle.blobContent) {
-                is BlobContent.TextContent -> {
-                    Text(
-                        text = blobCircle.blobContent.text.value,
-                        style = blobCircle.blobContent.textStyle,
-                        color = blobCircle.blobContent.color,
-                        modifier = blobCircle.blobContent.modifier.align(Alignment.Center)
-                    )
-                }
-
-                is BlobContent.ImageContent -> {
-                    Image(
-                        painter = blobCircle.blobContent.painter.value,
-                        contentDescription = blobCircle.blobContent.contentDescription,
-                        modifier = blobCircle.blobContent.modifier
-                    )
-                }
-            }
-        }
     }
 }
