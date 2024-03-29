@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Blob-Stepper</string>
+    <string name="big_text">Embark on an enchanting journey through the ruins of bygone empires with Whispers of the Ancient World. This mesmerizing book offers readers a vivid glimpse into the wisdom of ancient civilizations, from the philosophies carved into Greek stone to the hieroglyphic chronicles of Egyptian rulers. Authored by the distinguished archaeologist Dr. Helena M. Forte, the work is a product of meticulous research and a passionate narrative, weaving together fragments of history into a tapestry that depicts the cultural triumphs and resilience of humanity.\n</string>
+    <string name="body_text">Each chapter opens a portal to a distinct epoch, shedding light on the quotidian lives, sacred rites, and awe-inspiring feats of our ancestors. Introduced by a foreword from a renowned historian, the book transcends academic study, prompting readers to ponder the legacies we are to leave for future generations. Whispers of the Ancient</string>
 </resources>
